@@ -442,7 +442,7 @@ inline float SQR(float val) { return val*val; }
     float x, y, z;
     float intensity;
 
-    float time_diff_start_to_this_packet = (pkt.stamp - scan_start_time).toSec();
+    //float time_diff_start_to_this_packet = (pkt.stamp - scan_start_time).toSec();
 
     const raw_packet_t *raw = (const raw_packet_t *) &pkt.data[0];
 
@@ -599,10 +599,10 @@ inline float SQR(float val) { return val*val; }
               SQR(1 - tmp.uint/65535)));
             intensity = (intensity < min_intensity) ? min_intensity : intensity;
             intensity = (intensity > max_intensity) ? max_intensity : intensity;
-  
-            float time = 0;
-            if (timing_offsets.size())
-              time = timing_offsets[block][firing * 16 + dsr] + time_diff_start_to_this_packet;
+            // We preffer to have no so accurate timing to perform desired discretization of point clouds
+            float time = pkt.stamp.toSec();
+//            if (timing_offsets.size())
+//              time = timing_offsets[block][firing * 16 + dsr] + time_diff_start_to_this_packet;
 
             data.addPoint(x_coord, y_coord, z_coord, corrections.laser_ring, azimuth_corrected, distance, intensity, time);
           }
